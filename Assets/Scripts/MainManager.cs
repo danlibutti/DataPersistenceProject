@@ -11,6 +11,8 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    private Text UserNameText;
+
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -36,6 +38,20 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        if (PersistenceManager.Instance != null)
+        {
+            PersistenceManager.Instance.LoadUserData();
+
+            if (UserNameText != null)
+            {
+                UserNameText.text = PersistenceManager.Instance.UserName;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("PersistenceManager non trovato!");
+        }
     }
 
     private void Update()
@@ -60,6 +76,11 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+        }
     }
 
     void AddPoint(int point)
@@ -72,5 +93,23 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        
+        if(PersistenceManager.Instance != null)
+        {
+            // Salva il punteggio più alto dell'utente
+            if (PersistenceManager.Instance.UserHighScore < m_Points)
+            {
+                PersistenceManager.Instance.UserHighScore = m_Points;
+
+                Debug.Log($"Nuovo highscore per {PersistenceManager.Instance.CurrentUserName}: {m_Points}");
+
+                PersistenceManager.Instance.SaveUserData();
+            }
+            PersistenceManager.Instance.UpdateUI();
+        }
+        else
+        {
+            Debug.LogWarning("PersistenceManager non trovato durante GameOver!");
+        }
     }
 }
