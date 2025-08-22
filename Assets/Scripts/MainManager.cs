@@ -103,6 +103,7 @@ public class MainManager : MonoBehaviour
 
                 Debug.Log($"Nuovo highscore per {PersistenceManager.Instance.CurrentUserName}: {m_Points}");
 
+                PersistenceManager.Instance.SetUserName(PersistenceManager.Instance.CurrentUserName);
                 PersistenceManager.Instance.SaveUserData();
             }
             PersistenceManager.Instance.UpdateUI();

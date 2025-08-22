@@ -65,7 +65,7 @@ public class PersistenceManager : MonoBehaviour
     public void SetUserName(string newName)
     {
         UserName = newName;
-        SaveUserData();
+        //SaveUserData();
         UpdateUI();
     }
 
